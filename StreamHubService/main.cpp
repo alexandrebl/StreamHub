@@ -1,35 +1,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
-#include <utility>
 #include <boost/asio.hpp>
 #include "session.h"
+#include "tcpserver.h"
 
+using boost::asio::io_service;
 using boost::asio::ip::tcp;
-
-class server {
-public:
-	server(boost::asio::io_service& io_service, const short port)
-		: acceptor_(io_service, tcp::endpoint(tcp::v4(), port)),
-		socket_(io_service) {
-		do_accept();
-	}
-
-private:
-	void do_accept() {
-		acceptor_.async_accept(socket_,
-			[this](boost::system::error_code ec) {
-			if (!ec) {
-				std::make_shared<session>(std::move(socket_))->start();
-			}
-
-			do_accept();
-		});
-	}
-
-	tcp::acceptor acceptor_;
-	tcp::socket socket_;
-};
 
 int main(const int argc, char* argv[]) {
 	try {
@@ -38,9 +15,9 @@ int main(const int argc, char* argv[]) {
 			return 1;
 		}
 
-		boost::asio::io_service io_service;
+		io_service io_service;
 
-		server s(io_service, std::atoi(argv[1]));
+		tcpserver s(io_service, std::atoi(argv[1]));
 
 		io_service.run();
 	} catch (std::exception& e) {

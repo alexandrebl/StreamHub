@@ -1,12 +1,15 @@
 #pragma once
 #include <boost/asio/ip/tcp.hpp>
 
+using boost::asio::ip::tcp;
+using boost::asio::io_service;
+
 class tcpserver {
 public:
-	boost::asio::ip::tcp::acceptor acceptor_;
-	boost::asio::ip::tcp::socket socket_;
+	tcp::acceptor acceptor;
+	tcp::socket socket;
 
-	tcpserver(boost::asio::io_service& io_service, const short port);
+	tcpserver(io_service& io_service, const short port);
 
 private:
 	void do_accept();
