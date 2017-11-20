@@ -1,17 +1,21 @@
 #include "tcpserver.h"
 #include "session.h"
 
-tcpserver::tcpserver(boost::asio::io_service& io_service, const short port)
-	: acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
-	socket_(io_service) {
+using boost::asio::io_service;
+using boost::asio::ip::tcp;
+using boost::system::error_code;
+
+tcpserver::tcpserver(io_service& io_service, const short port)
+	: acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
+	socket(io_service) {
 	do_accept();
 }
 
 void tcpserver::do_accept() {
-		acceptor_.async_accept(socket_,
-			[this](boost::system::error_code ec) {
+		acceptor.async_accept(socket,
+			[this](error_code ec) {
 			if (!ec) {
-				std::make_shared<session>(std::move(socket_))->start();
+				std::make_shared<session>(std::move(socket))->start();
 			}
 
 			do_accept();
