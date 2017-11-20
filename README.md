@@ -1,5 +1,4 @@
-# StreamHub
-Stream Hub Service
+# StreamHub Service
 
 ### How to use:
 streamhubservice.exe <port number>
